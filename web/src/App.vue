@@ -4,15 +4,25 @@ import { useRoute, useRouter } from 'vue-router';
 import { Menu, X, ArrowUpRight, LogOut } from 'lucide-vue-next';
 import { api, errorMessage, session, setToken } from './api';
 import BrandLogo from './components/BrandLogo.vue';
+import { usesSharedGreenTheme } from './public-site';
 const router = useRouter();
 const route = useRoute();
 const mobile = ref(false);
+const menuButton = ref<HTMLButtonElement>();
 const logoutError = ref('');
 const loggingOut = ref(false);
 const authPage = computed(() => ['/login', '/register'].includes(route.path));
+const v3Auth = computed(() => authPage.value);
 const standaloneHome = computed(() => route.path === '/home-v2');
-const links = [['/features', '产品能力'], ['/solutions', '应用场景'], ['/templates', '模板市场'], ['/pricing', '价格方案'], ['/resources', '资源中心'], ['/contact', '联系我们']];
+const greenTheme = computed(() => usesSharedGreenTheme(route.path));
+const v3Public = computed(() => greenTheme.value && !v3Auth.value);
+const links = [['/features', '产品能力'], ['/solutions', '应用场景'], ['/templates', '模板市场'], ['/pricing', '价格'], ['/resources', '资源中心'], ['/contact', '联系我们']];
 watch(() => route.fullPath, () => { mobile.value = false; logoutError.value = ''; });
+function closeMenu() {
+  if (!mobile.value) return;
+  mobile.value = false;
+  menuButton.value?.focus();
+}
 async function logout() {
   loggingOut.value = true;
   try { await api('/auth/logout-all', 'POST'); setToken(''); await router.push('/'); }
@@ -22,7 +32,7 @@ async function logout() {
 </script>
 <template>
   <a href="#main-content" class="skip-link">跳转到主要内容</a>
-  <header v-if="!standaloneHome" class="nav">
+  <header v-if="!standaloneHome" class="nav" :class="{ 'v3-nav': greenTheme }" @keydown.esc="closeMenu">
     <div class="navinner">
       <router-link to="/" aria-label="Vizora AI 首页"><BrandLogo /></router-link>
       <span v-if="authPage" class="auth-location">/ 账号{{ route.path === '/register' ? '注册' : '登录' }}</span>
@@ -37,19 +47,19 @@ async function logout() {
           <button class="icon-button" :disabled="loggingOut" aria-label="退出全部登录会话" @click="logout"><LogOut :size="18" /></button>
         </template>
         <template v-else><router-link class="ghost button small login-link" to="/login">登录</router-link><router-link class="button small" to="/register">免费开始 <ArrowUpRight :size="16" /></router-link></template>
-        <button v-if="!authPage" class="icon-button mobile-menu" :aria-expanded="mobile" aria-controls="main-nav" :aria-label="mobile ? '关闭导航菜单' : '打开导航菜单'" @click="mobile = !mobile" @keydown.esc="mobile = false"><X v-if="mobile" /><Menu v-else /></button>
+        <button v-if="!authPage" ref="menuButton" class="icon-button mobile-menu" :aria-expanded="mobile" aria-controls="main-nav" :aria-label="mobile ? '关闭导航菜单' : '打开导航菜单'" @click="mobile = !mobile" @keydown.esc="closeMenu"><X v-if="mobile" /><Menu v-else /></button>
       </div>
     </div>
   </header>
   <p v-if="logoutError" class="global-error error" role="alert">{{ logoutError }}</p>
-  <main id="main-content" tabindex="-1"><router-view v-slot="{ Component }"><transition name="page" mode="out-in"><component :is="Component" :key="route.path" /></transition></router-view></main>
-  <footer v-if="!authPage && !standaloneHome" class="footer">
+  <main id="main-content" tabindex="-1" :class="{ 'v3-public': v3Public, 'v3-account': v3Auth }"><router-view v-slot="{ Component }"><transition name="page" mode="out-in"><component :is="Component" :key="route.path" /></transition></router-view></main>
+  <footer v-if="!authPage && !standaloneHome" class="footer" :class="{ 'v3-footer': greenTheme }">
     <div class="container footgrid">
       <div><router-link to="/" aria-label="Vizora AI 首页"><BrandLogo /></router-link><p>You Imagine It. Vizora Builds It.</p><p>面向 FDE 与 AI 原生组织的<br />可视化应用创建与交付平台。</p><span class="footer-status"><i /> 从想法，走向真实业务</span></div>
-      <div><h3>产品</h3><router-link to="/features">产品能力</router-link><router-link to="/solutions">应用场景</router-link><router-link to="/templates">模板市场</router-link><router-link to="/pricing">价格方案</router-link></div>
+      <div><h3>产品</h3><router-link to="/features">产品能力</router-link><router-link to="/solutions">应用场景</router-link><router-link to="/templates">模板市场</router-link><router-link to="/pricing">价格</router-link></div>
       <div><h3>资源</h3><router-link to="/resources">帮助与文档</router-link><router-link to="/resources#designer">Designer 集成</router-link><router-link to="/workspace">应用工作台</router-link><router-link to="/billing">会员与订单</router-link></div>
       <div><h3>与我们联系</h3><router-link to="/contact">预约产品演示 ↗</router-link><router-link to="/contact">企业定制与私有化</router-link><router-link to="/terms">服务协议</router-link><router-link to="/privacy">隐私政策</router-link></div>
     </div>
-    <div class="container fineprint"><span>© {{ new Date().getFullYear() }} Vizora AI. All rights reserved.</span><span>规划能力以功能标识为准 · 运营主体与法务信息待正式审核</span></div>
+    <div class="container fineprint"><span>© {{ new Date().getFullYear() }} Vizora AI. All rights reserved.</span><span v-if="route.path !== '/'">规划能力以功能标识为准 · 运营主体与法务信息待正式审核</span></div>
   </footer>
 </template>

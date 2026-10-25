@@ -39,7 +39,7 @@ async function submit() {
 }
 </script>
 <template>
-  <section class="panel auth-wrap"><MailCheck v-if="mode === 'resend' || mode === 'verify'" :size="35" color="#48c7ff" /><ShieldCheck v-else :size="35" color="#48c7ff" /><h1 style="margin-top:20px">{{ title }}</h1><p>验证和密码重置链接有效期为 30 分钟，且只能使用一次。</p>
+  <section class="panel auth-wrap"><MailCheck v-if="mode === 'resend' || mode === 'verify'" :size="35" color="#087e69" /><ShieldCheck v-else :size="35" color="#087e69" /><h1 style="margin-top:20px">{{ title }}</h1><p>验证和密码重置链接有效期为 30 分钟，且只能使用一次。</p>
     <p v-if="!token && !complete && (mode === 'verify' || mode === 'reset')" class="notice">{{ route.query.verified === '1' ? '此邮箱已经完成验证，请登录。' : route.query.completed === '1' ? '密码重置已完成，请登录。' : '缺少有效链接。请从邮件进入，或重新请求邮件。' }}</p>
     <form v-if="!complete && !route.query.verified && !route.query.completed" class="form" @submit.prevent="submit">
       <label v-if="mode === 'resend' || mode === 'forgot'">电子邮箱<input v-model="email" type="email" autocomplete="email" required maxlength="320" placeholder="you@company.com" /></label>

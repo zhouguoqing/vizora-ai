@@ -2,7 +2,9 @@ import { createApp, nextTick } from 'vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import { session } from './api';
+import { usesSharedGreenTheme } from './public-site';
 import './style.css';
+import './v3-public.css';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -10,7 +12,10 @@ const router = createRouter({
     return to.hash ? { el: to.hash, top: 90, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' } : { top: 0 };
   },
   routes: [
-    { path: '/', component: () => import('./pages/Home.vue'), meta: { title: '从想法到可视化应用' } },
+    { path: '/', component: () => import('./pages/HomeV3.vue'), meta: {
+      title: 'AI 大屏设计与开发',
+      description: 'Vizora AI，以自然语言描述大屏需求，从经营驾驶舱、设备监控到项目交付看板，通过项目工作台连接独立 Designer，开展 AI 大屏设计与开发。',
+    } },
     { path: '/home-v2', component: () => import('./pages/HomeV2.vue'), meta: {
       title: 'AI 大屏设计与开发',
       description: 'Vizora AI，以自然语言描述大屏需求，从经营驾驶舱、设备监控到项目交付看板，通过项目工作台连接独立 Designer，开展 AI 大屏设计与开发。',
@@ -21,7 +26,7 @@ const router = createRouter({
     { path: '/templates', component: () => import('./pages/Templates.vue'), meta: { title: '模板市场' } },
     { path: '/resources', component: () => import('./pages/Resources.vue'), meta: { title: '资源中心' } },
     { path: '/contact', component: () => import('./pages/Contact.vue'), meta: { title: '联系销售' } },
-    { path: '/pricing', component: () => import('./pages/Pricing.vue'), meta: { title: '价格方案' } },
+    { path: '/pricing', component: () => import('./pages/Pricing.vue'), meta: { title: '价格' } },
     { path: '/login', component: () => import('./pages/Auth.vue'), meta: { title: '账号登录' } },
     { path: '/register', component: () => import('./pages/Auth.vue'), meta: { title: '免费注册' } },
     { path: '/verify-email', name: 'verify', component: () => import('./pages/AccountRecovery.vue'), meta: { title: '验证邮箱' } },
@@ -44,7 +49,8 @@ const defaultThemeColor = themeColor?.content ?? '#061328';
 router.afterEach(async to => {
   document.title = `${String(to.meta.title || '可视化应用平台')} · Vizora AI`;
   if (description) description.content = typeof to.meta.description === 'string' ? to.meta.description : defaultDescription;
-  if (themeColor) themeColor.content = typeof to.meta.themeColor === 'string' ? to.meta.themeColor : defaultThemeColor;
+  const greenTheme = usesSharedGreenTheme(to.path);
+  if (themeColor) themeColor.content = typeof to.meta.themeColor === 'string' ? to.meta.themeColor : greenTheme ? '#f6f9f6' : defaultThemeColor;
   await nextTick();
   document.querySelector<HTMLElement>('#main-content')?.focus({ preventScroll: true });
 });

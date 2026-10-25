@@ -5,10 +5,19 @@ import AuthForm from '../components/AuthForm.vue';
 const route = useRoute();
 </script>
 <template>
-  <section class="auth-page space-section"><div class="container auth-grid">
+  <section class="auth-page v3-auth-page"><div class="container auth-grid">
     <div class="auth-story"><span class="eyebrow">YOUR NEXT CHAPTER STARTS HERE</span><h1>从想法到应用，<br /><span class="gradient-text">只差一次登录。</span></h1><p>Vizora AI 基于 FDE 理念，让 AI 原生团队更快地将想法变为可落地的应用。<br />从数据到决策，从概念到业务价值。</p>
       <div class="auth-perks"><div><Zap :size="30" />AI 原生生产力<span>以业务需求为起点</span></div><div><ShieldCheck :size="30" />安全账号与接入<span>邮箱验证 · 短效票据</span></div><div><Layers3 :size="30" />专注项目交付<span>让每个想法有迹可循</span></div></div>
-      <img class="product-illustration" src="/brand/product-preview.webp" width="421" height="275" alt="Vizora AI 高保真产品界面设计参考" /><p class="illustration-caption">产品界面设计参考，实际应用在独立 Designer 中构建</p>
+      <div class="v3-auth-preview" role="img" aria-label="区域经营看板概念示意，不含实时业务数据">
+        <div class="v3-auth-preview-head"><strong>区域经营概览</strong><span>概念示意 · 非实时数据</span></div>
+        <div class="v3-auth-preview-metrics"><div><span>核心指标</span><strong>经营表现</strong></div><div><span>业务趋势</span><strong>指标变化</strong></div><div><span>数据来源</span><strong>待接入</strong></div></div>
+        <svg class="v3-auth-preview-chart" viewBox="0 0 600 150" aria-hidden="true">
+          <path d="M0 125H600M0 82H600M0 39H600" fill="none" stroke="#e5eee8" stroke-dasharray="4 7" />
+          <path d="M10 117C60 109 78 76 126 87S194 104 240 66 310 84 354 48 427 69 472 39 541 53 590 16" fill="none" stroke="#16816b" stroke-width="4" stroke-linecap="round" />
+          <path d="M10 117C60 109 78 76 126 87S194 104 240 66 310 84 354 48 427 69 472 39 541 53 590 16V150H10Z" fill="#eaf4ed" />
+        </svg>
+        <div class="v3-auth-preview-foot"><span>从业务问题开始</span><span>在 Designer 中继续设计</span></div>
+      </div>
     </div>
     <div><div class="auth-mobile-tabs" aria-label="账号操作"><router-link :to="{ path: '/login', query: route.query }">账号登录</router-link><router-link :to="{ path: '/register', query: route.query }">免费注册</router-link></div>
       <div class="auth-forms"><section class="auth-card" :class="{ 'mobile-hidden': route.path !== '/login' }" aria-label="登录表单"><h2>登录</h2><p>欢迎回来，继续在 Vizora AI 构建更强大的应用</p><AuthForm mode="login" /><div class="auth-unavailable">当前支持邮箱密码登录<br />微信登录与企业 SSO 为规划能力，暂未开放</div><div class="auth-switch">没有账号？ <router-link :to="{ path: '/register', query: route.query }">立即免费注册</router-link></div></section>

@@ -188,6 +188,11 @@
 .v3-auth-page .auth-card.mobile-hidden { display: none; }
 
 .pricing-controls { margin-bottom: 20px; align-items: center; }
+.v3-public .pricing-controls .billing-toggle button:not(.active) { color: #087e69; }
+.v3-public .discount { color: #fff; background: #087e69; }
+.v3-public .plan .description, .v3-public .plan .price-note, .v3-public .plan ul { color: #087e69; }
+.v3-public .contact-layout .form > label,
+.v3-public .contact-layout > .tile:first-child > p { color: #087e69; }
 .pricing-service-state { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 18px; padding: 13px 16px; color: #53675d; border: 1px solid #dce5df; border-radius: 10px; background: #eef5f0; font-size: 13px; }
 .pricing-service-state.is-error { color: #714b1d; border-color: #ead8b1; background: #fff8e9; }
 .pricing-disclaimer { margin-top: 20px; }
